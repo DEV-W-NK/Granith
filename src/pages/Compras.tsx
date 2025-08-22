@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
 import { StatsCard } from "@/components/dashboard/StatsCard";
+import { NovoPedidoModal } from "@/components/modals/NovoPedidoModal";
+import { useState } from "react";
 
 const stats = [
   {
@@ -91,6 +93,8 @@ const compras = [
 ];
 
 export default function Compras() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRequisicaoModalOpen, setIsRequisicaoModalOpen] = useState(false);
   const formatCurrency = (value: number) => {
     if (value === 0) return "-";
     return new Intl.NumberFormat('pt-BR', {
@@ -147,11 +151,11 @@ export default function Compras() {
                 <p className="text-muted-foreground">Gestão de requisições, pedidos de compra e contratos</p>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className="gap-2" onClick={() => setIsRequisicaoModalOpen(true)}>
                   <FileText className="h-4 w-4" />
                   Nova Requisição
                 </Button>
-                <Button className="gap-2">
+                <Button className="gap-2" onClick={() => setIsModalOpen(true)}>
                   <Plus className="h-4 w-4" />
                   Novo Pedido
                 </Button>
@@ -252,6 +256,18 @@ export default function Compras() {
           </div>
         </main>
       </div>
+      
+      <NovoPedidoModal 
+        open={isModalOpen} 
+        onOpenChange={setIsModalOpen}
+        onSuccess={() => {/* Refresh compras */}}
+      />
+      
+      <NovoPedidoModal 
+        open={isRequisicaoModalOpen} 
+        onOpenChange={setIsRequisicaoModalOpen}
+        onSuccess={() => {/* Refresh compras */}}
+      />
     </div>
   );
 }

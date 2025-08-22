@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
 import { StatsCard } from "@/components/dashboard/StatsCard";
+import { NovoFuncionarioModal } from "@/components/modals/NovoFuncionarioModal";
+import { useState } from "react";
 
 const stats = [
   {
@@ -83,6 +85,7 @@ const funcionarios = [
 ];
 
 export default function Workforce() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const getStatusVariant = (status: string) => {
     switch (status) {
       case "Em Campo": return "default";
@@ -110,7 +113,7 @@ export default function Workforce() {
                 <h1 className="text-3xl font-bold text-foreground">Workforce & Geofencing</h1>
                 <p className="text-muted-foreground">Gestão de equipe e controle de ponto com geolocalização</p>
               </div>
-              <Button className="gap-2">
+              <Button className="gap-2" onClick={() => setIsModalOpen(true)}>
                 <Plus className="h-4 w-4" />
                 Novo Funcionário
               </Button>
@@ -191,6 +194,12 @@ export default function Workforce() {
           </div>
         </main>
       </div>
+      
+      <NovoFuncionarioModal 
+        open={isModalOpen} 
+        onOpenChange={setIsModalOpen}
+        onSuccess={() => {/* Refresh funcionários */}}
+      />
     </div>
   );
 }

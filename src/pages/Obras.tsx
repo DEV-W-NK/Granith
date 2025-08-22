@@ -5,47 +5,16 @@ import { Building, MapPin, Calendar, DollarSign, Plus, Search } from "lucide-rea
 import { Input } from "@/components/ui/input";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
+import { NovaObraModal } from "@/components/modals/NovaObraModal";
+import { useState, useEffect } from "react";
+import { useObras } from "@/hooks/useObras";
+import { Obra } from "@/types/obra";
 
-const obras = [
-  {
-    id: "OB-001",
-    nome: "Centro Comercial Plaza Norte",
-    cliente: "Grupo Imobiliário ABC",
-    status: "Em Andamento",
-    localizacao: "São Paulo, SP",
-    inicio: "2024-01-15",
-    previsaoTermino: "2025-06-30",
-    orcamento: 15500000,
-    realizado: 8750000,
-    progresso: 56
-  },
-  {
-    id: "OB-002", 
-    nome: "Residencial Jardim das Flores",
-    cliente: "Construtora XYZ",
-    status: "Em Andamento",
-    localizacao: "Rio de Janeiro, RJ",
-    inicio: "2024-03-01",
-    previsaoTermino: "2025-12-15",
-    orcamento: 22000000,
-    realizado: 5500000,
-    progresso: 25
-  },
-  {
-    id: "OB-003",
-    nome: "Galpão Industrial Norte",
-    cliente: "Indústria Beta Ltda",
-    status: "Planejamento",
-    localizacao: "Campinas, SP",
-    inicio: "2024-09-01",
-    previsaoTermino: "2025-08-30",
-    orcamento: 8900000,
-    realizado: 0,
-    progresso: 0
-  }
-];
 
 export default function Obras() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { obras, loading, refresh } = useObras({ autoLoad: true });
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -57,10 +26,23 @@ export default function Obras() {
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case "Em Andamento": return "default";
-      case "Planejamento": return "secondary";
-      case "Concluída": return "outline";
+      case "ativa": return "default";
+      case "planejamento": return "secondary";
+      case "concluida": return "outline";
+      case "pausada": return "secondary";
+      case "cancelada": return "destructive";
       default: return "secondary";
+    }
+  };
+
+  const formatStatus = (status: string) => {
+    switch (status) {
+      case "ativa": return "Em Andamento";
+      case "planejamento": return "Planejamento";
+      case "concluida": return "Concluída";
+      case "pausada": return "Pausada";
+      case "cancelada": return "Cancelada";
+      default: return status;
     }
   };
 
@@ -78,7 +60,7 @@ export default function Obras() {
                 <h1 className="text-3xl font-bold text-foreground">Obras & WBS</h1>
                 <p className="text-muted-foreground">Gestão completa de obras e estrutura analítica de projetos</p>
               </div>
-              <Button className="gap-2">
+              <Button className="gap-2" onClick={() => setIsModalOpen(true)}>
                 <Plus className="h-4 w-4" />
                 Nova Obra
               </Button>
@@ -92,6 +74,7 @@ export default function Obras() {
             </div>
 
             <div className="grid gap-6">
+              {loading && <div className="text-center text-muted-foreground">Carregando obras...</div>}
               {obras.map((obra) => (
                 <Card key={obra.id} className="hover:shadow-md transition-shadow">
                   <CardHeader>
@@ -101,7 +84,7 @@ export default function Obras() {
                           <Building className="h-5 w-5 text-primary" />
                           {obra.nome}
                           <Badge variant={getStatusVariant(obra.status)}>
-                            {obra.status}
+                            {formatStatus(obra.status)}
                           </Badge>
                         </CardTitle>
                         <CardDescription className="flex items-center gap-2 mt-2">
@@ -124,7 +107,7 @@ export default function Obras() {
                           <Calendar className="h-4 w-4" />
                           Início
                         </div>
-                        <p className="font-medium">{new Date(obra.inicio).toLocaleDateString('pt-BR')}</p>
+                        <p className="font-medium">{new Date(obra.dataInicio).toLocaleDateString('pt-BR')}</p>
                       </div>
                       
                       <div className="space-y-2">
@@ -140,7 +123,7 @@ export default function Obras() {
                           <DollarSign className="h-4 w-4" />
                           Orçamento
                         </div>
-                        <p className="font-medium">{formatCurrency(obra.orcamento)}</p>
+                        <p className="font-medium">{formatCurrency(obra.orcamentoTotal)}</p>
                       </div>
                       
                       <div className="space-y-2">
@@ -148,14 +131,14 @@ export default function Obras() {
                           <DollarSign className="h-4 w-4" />
                           Realizado
                         </div>
-                        <p className="font-medium">{formatCurrency(obra.realizado)}</p>
+                        <p className="font-medium">{formatCurrency(obra.gastoAtual || 0)}</p>
                         <div className="w-full bg-secondary rounded-full h-2">
                           <div 
                             className="bg-primary h-2 rounded-full transition-all" 
-                            style={{ width: `${obra.progresso}%` }}
+                            style={{ width: `${obra.progressoFisico || 0}%` }}
                           />
                         </div>
-                        <p className="text-xs text-muted-foreground">{obra.progresso}% concluído</p>
+                        <p className="text-xs text-muted-foreground">{obra.progressoFisico || 0}% concluído</p>
                       </div>
                     </div>
                   </CardContent>
@@ -165,6 +148,12 @@ export default function Obras() {
           </div>
         </main>
       </div>
+      
+      <NovaObraModal 
+        open={isModalOpen} 
+        onOpenChange={setIsModalOpen}
+        onSuccess={refresh}
+      />
     </div>
   );
 }

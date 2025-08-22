@@ -14,6 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
+      compras: {
+        Row: {
+          created_at: string
+          data_pedido: string
+          fornecedor: string | null
+          id: string
+          itens_quantidade: number | null
+          numero: string
+          obra_id: string | null
+          observacoes: string | null
+          prazo_entrega: string | null
+          solicitante: string
+          status: Database["public"]["Enums"]["compra_status"]
+          tipo: Database["public"]["Enums"]["compra_tipo"]
+          updated_at: string
+          valor: number | null
+        }
+        Insert: {
+          created_at?: string
+          data_pedido?: string
+          fornecedor?: string | null
+          id?: string
+          itens_quantidade?: number | null
+          numero: string
+          obra_id?: string | null
+          observacoes?: string | null
+          prazo_entrega?: string | null
+          solicitante: string
+          status?: Database["public"]["Enums"]["compra_status"]
+          tipo?: Database["public"]["Enums"]["compra_tipo"]
+          updated_at?: string
+          valor?: number | null
+        }
+        Update: {
+          created_at?: string
+          data_pedido?: string
+          fornecedor?: string | null
+          id?: string
+          itens_quantidade?: number | null
+          numero?: string
+          obra_id?: string | null
+          observacoes?: string | null
+          prazo_entrega?: string | null
+          solicitante?: string
+          status?: Database["public"]["Enums"]["compra_status"]
+          tipo?: Database["public"]["Enums"]["compra_tipo"]
+          updated_at?: string
+          valor?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compras_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fornecedores: {
+        Row: {
+          cep: string | null
+          cidade: string | null
+          cnpj: string | null
+          contato_principal: string | null
+          created_at: string
+          email: string | null
+          endereco: string | null
+          estado: string | null
+          id: string
+          nome: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          cep?: string | null
+          cidade?: string | null
+          cnpj?: string | null
+          contato_principal?: string | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cep?: string | null
+          cidade?: string | null
+          cnpj?: string | null
+          contato_principal?: string | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      funcionarios: {
+        Row: {
+          created_at: string
+          data_admissao: string | null
+          email: string | null
+          funcao: string
+          horas_hoje: number | null
+          id: string
+          localizacao: string | null
+          nome: string
+          obra_id: string | null
+          salario: number | null
+          status: Database["public"]["Enums"]["funcionario_status"]
+          telefone: string | null
+          tipo: Database["public"]["Enums"]["funcionario_tipo"]
+          ultimo_ponto: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_admissao?: string | null
+          email?: string | null
+          funcao: string
+          horas_hoje?: number | null
+          id?: string
+          localizacao?: string | null
+          nome: string
+          obra_id?: string | null
+          salario?: number | null
+          status?: Database["public"]["Enums"]["funcionario_status"]
+          telefone?: string | null
+          tipo?: Database["public"]["Enums"]["funcionario_tipo"]
+          ultimo_ponto?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_admissao?: string | null
+          email?: string | null
+          funcao?: string
+          horas_hoje?: number | null
+          id?: string
+          localizacao?: string | null
+          nome?: string
+          obra_id?: string | null
+          salario?: number | null
+          status?: Database["public"]["Enums"]["funcionario_status"]
+          telefone?: string | null
+          tipo?: Database["public"]["Enums"]["funcionario_tipo"]
+          ultimo_ponto?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funcionarios_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       obras: {
         Row: {
           cliente: string
@@ -70,6 +236,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      compra_status:
+        | "pendente"
+        | "aprovado"
+        | "em_entrega"
+        | "entregue"
+        | "cancelado"
+      compra_tipo: "requisicao" | "pedido_compra" | "contrato"
+      funcionario_status: "em_campo" | "folga" | "ausente" | "ferias"
+      funcionario_tipo: "clt" | "pj" | "terceirizado"
       status_obra:
         | "ativa"
         | "pausada"
@@ -203,6 +378,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      compra_status: [
+        "pendente",
+        "aprovado",
+        "em_entrega",
+        "entregue",
+        "cancelado",
+      ],
+      compra_tipo: ["requisicao", "pedido_compra", "contrato"],
+      funcionario_status: ["em_campo", "folga", "ausente", "ferias"],
+      funcionario_tipo: ["clt", "pj", "terceirizado"],
       status_obra: [
         "ativa",
         "pausada",
