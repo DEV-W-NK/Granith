@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      obras: {
+        Row: {
+          cliente: string
+          created_at: string
+          data_inicio: string
+          equipe: number
+          gasto_atual: number
+          id: string
+          localizacao: string
+          nome: string
+          orcamento_total: number
+          previsao_termino: string
+          progresso_fisico: number
+          status: Database["public"]["Enums"]["status_obra"]
+          updated_at: string
+        }
+        Insert: {
+          cliente: string
+          created_at?: string
+          data_inicio: string
+          equipe?: number
+          gasto_atual?: number
+          id?: string
+          localizacao: string
+          nome: string
+          orcamento_total?: number
+          previsao_termino: string
+          progresso_fisico?: number
+          status?: Database["public"]["Enums"]["status_obra"]
+          updated_at?: string
+        }
+        Update: {
+          cliente?: string
+          created_at?: string
+          data_inicio?: string
+          equipe?: number
+          gasto_atual?: number
+          id?: string
+          localizacao?: string
+          nome?: string
+          orcamento_total?: number
+          previsao_termino?: string
+          progresso_fisico?: number
+          status?: Database["public"]["Enums"]["status_obra"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +70,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      status_obra:
+        | "ativa"
+        | "pausada"
+        | "concluida"
+        | "cancelada"
+        | "planejamento"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +202,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      status_obra: [
+        "ativa",
+        "pausada",
+        "concluida",
+        "cancelada",
+        "planejamento",
+      ],
+    },
   },
 } as const
